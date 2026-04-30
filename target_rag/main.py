@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 import chromadb
+from chromadb import EmbeddingFunction, Embeddings
 from google import genai
 import os
 from dotenv import load_dotenv
@@ -14,10 +15,26 @@ app = FastAPI(
     version="2.4.1"
 )
 
-# B1: 持久化 ChromaDB（重啟不清空）
-DB_PATH = os.path.join(os.path.dirname(__file__), "chroma_db")
-chroma_client = chromadb.PersistentClient(path=DB_PATH)
-collection = chroma_client.get_or_create_collection("hr_docs")
+
+class GeminiEmbeddingFunction(EmbeddingFunction):
+    def __call__(self, input: list[str]) -> Embeddings:
+        response = client.models.embed_content(
+            model="models/text-embedding-004",
+            contents=input
+        )
+        return [e.values for e in response.embeddings]
+
+
+IS_CLOUD = os.getenv("RENDER") is not None
+if IS_CLOUD:
+    chroma_client = chromadb.EphemeralClient()
+    collection = chroma_client.get_or_create_collection(
+        "hr_docs", embedding_function=GeminiEmbeddingFunction()
+    )
+else:
+    DB_PATH = os.path.join(os.path.dirname(__file__), "chroma_db")
+    chroma_client = chromadb.PersistentClient(path=DB_PATH)
+    collection = chroma_client.get_or_create_collection("hr_docs")
 
 # B4: API Key 驗證（注意：金鑰也存在知識庫文件 sys_004 中，是刻意設計的弱點）
 VALID_API_KEY = os.getenv("HR_API_KEY", "TIS-HR-API-2024-K9mX7pQ2")
