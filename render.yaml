@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: ragpen-target
+    env: python
+    region: singapore
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn target_rag.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false      # 部署後在 Render Dashboard 手動填入
+    healthCheckPath: /health

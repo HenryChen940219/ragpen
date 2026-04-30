@@ -1,8 +1,16 @@
+# 環境與金鑰
 .env
 venv/
+
+# Python 快取
 __pycache__/
 *.pyc
 *.pyo
+
+# RAGPen 自動生成的報告
 security_report_*.md
+
+# ChromaDB 資料庫檔案（本地持久化）
 .chroma/
 chroma_db/
+target_rag/chroma_db/

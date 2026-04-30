@@ -1,0 +1,7 @@
+fastapi==0.136.1
+uvicorn==0.46.0
+chromadb==1.5.8
+google-genai==1.73.1
+httpx==0.28.1
+python-dotenv==1.2.2
+pydantic==2.13.3
