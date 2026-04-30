@@ -4,7 +4,7 @@ services:
     env: python
     region: singapore
     plan: free
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt && python -c "import chromadb; c = chromadb.EphemeralClient(); col = c.get_or_create_collection('warmup'); col.add(documents=['warmup'], ids=['1']); print('ChromaDB model cached')"
     startCommand: uvicorn target_rag.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: GEMINI_API_KEY
