@@ -4,6 +4,7 @@ import chromadb
 from chromadb import EmbeddingFunction, Embeddings
 from google import genai
 import os
+import httpx
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -18,11 +19,19 @@ app = FastAPI(
 
 class GeminiEmbeddingFunction(EmbeddingFunction):
     def __call__(self, input: list[str]) -> Embeddings:
-        response = client.models.embed_content(
-            model="text-embedding-004",
-            contents=input
+        api_key = os.getenv("GEMINI_API_KEY")
+        requests_body = [
+            {"model": "models/text-embedding-004", "content": {"parts": [{"text": t}]}}
+            for t in input
+        ]
+        r = httpx.post(
+            "https://generativelanguage.googleapis.com/v1/models/text-embedding-004:batchEmbedContents",
+            params={"key": api_key},
+            json={"requests": requests_body},
+            timeout=60.0
         )
-        return [e.values for e in response.embeddings]
+        data = r.json()
+        return [e["values"] for e in data["embeddings"]]
 
 
 IS_CLOUD = os.getenv("RENDER") is not None
