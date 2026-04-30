@@ -137,6 +137,22 @@ py main.py
 
 ---
 
+## 示範
+
+**靶機健康檢查（50 份文件已載入）**
+
+![health](docs/health.png)
+
+**RAGPen 執行過程（自動探測三個攻擊面）**
+
+![terminal](docs/terminal.png)
+
+**自動生成的安全報告範例**
+
+完整範例報告：[sample_report.md](sample_report.md)
+
+---
+
 ## 測試你自己的 RAG 系統
 
 ```bash
