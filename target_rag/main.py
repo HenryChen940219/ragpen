@@ -19,7 +19,7 @@ app = FastAPI(
 class GeminiEmbeddingFunction(EmbeddingFunction):
     def __call__(self, input: list[str]) -> Embeddings:
         response = client.models.embed_content(
-            model="models/text-embedding-004",
+            model="text-embedding-004",
             contents=input
         )
         return [e.values for e in response.embeddings]
